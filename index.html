@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Drone Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { background:#0f172a; color:white; font-family:Arial; }
+    .card { background:#1e293b; padding:15px; margin:10px; border-radius:10px; }
+    .flex { display:flex; flex-wrap:wrap; }
+    .news { background:#ef4444; padding:10px; white-space:nowrap; overflow:hidden; }
+    .news span { display:inline-block; padding-left:100%; animation:scroll 15s linear infinite; }
+    @keyframes scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-100%)} }
+  </style>
+</head>
+
+<body>
+
+<div class="news">
+  <span>🚁 New drone tenders released | AI drones rising | Stay updated with industry trends</span>
+</div>
+
+<h1>Drone Industry Dashboard</h1>
+
+<div class="flex">
+  <div class="card" id="totalCompanies"></div>
+  <div class="card" id="totalDrones"></div>
+</div>
+
+<canvas id="chart"></canvas>
+
+<h2>📚 Drone Knowledge</h2>
+<div class="card">
+  Payload = weight drone can carry<br>
+  Endurance = flight time<br>
+  Higher payload reduces endurance
+</div>
+
+<h2>👥 Community</h2>
+<div class="card">
+  Coming soon: Connect with drone professionals
+</div>
+
+<script>
+const url = "PASTE_YOUR_JSON_LINK_HERE";
+
+fetch(url)
+.then(res => res.json())
+.then(data => {
+
+  document.getElementById("totalCompanies").innerHTML =
+    "Companies: " + new Set(data.map(d=>d.Company)).size;
+
+  document.getElementById("totalDrones").innerHTML =
+    "Total Drones: " + data.reduce((a,b)=>a+Number(b["No. of Drones"]),0);
+
+  const labels = data.map(d=>d.Company);
+  const values = data.map(d=>d["Tender Value"]);
+
+  new Chart(document.getElementById("chart"), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Tender Value',
+        data: values
+      }]
+    }
+  });
+
+});
+</script>
+
+</body>
+</html>
